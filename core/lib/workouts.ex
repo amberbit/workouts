@@ -30,4 +30,9 @@ defmodule Core.Workouts do
       }
     ]
   end
+
+  def by_name(name_fragment) do
+    all
+    |> Enum.filter(& String.contains?(&1.name, name_fragment))
+  end
 end

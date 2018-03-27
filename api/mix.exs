@@ -39,7 +39,8 @@ defmodule Api.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:absinthe, "~> 1.4.9"},
-      {:core, path: "../core"}
+      {:core, path: "../core"},
+      {:absinthe_plug, "~> 1.4"},
     ]
   end
 end
