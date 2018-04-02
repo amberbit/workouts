@@ -40,7 +40,8 @@ defmodule Api.Mixfile do
       {:cowboy, "~> 1.0"},
       {:absinthe, "~> 1.4.9"},
       {:core, path: "../core"},
-      {:absinthe_plug, "~> 1.4"}
+      {:absinthe_plug, "~> 1.4"},
+      {:cors_plug, "~> 1.5"},
     ]
   end
 end
