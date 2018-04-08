@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import WorkoutsViewWithData from './Workouts.js'
+import WorkoutsViewWithData from './WorkoutsWithData.js'
 
 // import Apollo Client
 import { ApolloClient} from 'apollo-client';
@@ -17,17 +17,6 @@ const client = new ApolloClient({
 });
 
 class App extends Component {
-  constructor(){
-    super()
-
-    this.state = { filter: "" }
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(event) {
-    this.setState({filter: event.target.value});
-  }
-
   render() {
     return (
       <div className="App">
@@ -36,9 +25,8 @@ class App extends Component {
           <h1 className="App-title">Welcome to React</h1>
         </header>
         <div className="App-intro">
-          <input type="text" onChange={this.handleChange}  />
           <ApolloProvider client={client} >
-            <WorkoutsViewWithData  filter={this.state.filter} />
+            <WorkoutsViewWithData />
           </ApolloProvider>
         </div>
       </div>
