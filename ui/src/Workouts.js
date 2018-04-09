@@ -1,28 +1,7 @@
 import React from 'react';
-
-
-// import gql query
-import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 
-
-const WorkoutsQuery = gql`
-  query Workouts($filter: String){
-    workouts(byName: $filter){
-      id
-      name
-      sets{
-        id
-        reps
-        exercise{
-          id
-          name
-        }
-      }
-    }
-  }
- `;
-
+import { WorkoutsQuery } from './queries';
 
 const SetView = (set) => {
   return <div key={ "set_" + set.id } >{set.reps} x {set.exercise.name}</div>

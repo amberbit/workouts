@@ -13,4 +13,14 @@ defmodule Api.Schema do
       resolve(&Resolvers.Workouts.all/3)
     end
   end
+
+  mutation do
+    @desc "Create workout"
+    field :create_workout, :workout do
+      arg :id, :id
+      arg :name, :string
+
+      resolve &Resolvers.Workouts.create/3
+    end
+  end
 end

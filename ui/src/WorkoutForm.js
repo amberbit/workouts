@@ -1,38 +1,108 @@
 import React, { Component } from 'react';
-
-// import gql query
-import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 
+import { WorkoutsQuery, AddWorkoutQuery } from './queries';
 
-const AddWorkoutQuery = gql`
-  mutation addWorkout($name: String!){
-    addWorkout(name: $name){
-      id
-      name
-    }
-  }
- `;
-
+const Exercises = [
+  { id: 1, name: 'Barbell squat' },
+  { id: 2, name: 'Stiff-leg deadlift' },
+  { id: 3, name: 'Barbell calf raise' },
+  { id: 4, name: 'Push ups' },
+  { id: 5, name: 'Bench press' },
+];
 
 class WorkoutFormView extends Component {
-  handleSubmit(e, addWorkout) {
-    const { input } = this;
+  constructor(){
+    super();
+    this.initialState = {
+      name: '',
+      sets: [{ exercise: {}, reps: 1 }],
+    };
+    this.state = { ...this.initialState };
+    this.renderExericseLine = this.renderExericseLine.bind(this);
+  }
 
+  handleSubmit(e, Workout) {
     e.preventDefault();
-    addWorkout({ variables: { name: input.value }});
-    input.value = '';
+    const { name, sets } = this.state;
+    const parsedSets = sets.map((set) => (
+      {
+        reps: parseInt(set.reps),
+        exercise: (typeof set.exercise === 'string' ? JSON.parse(set.exercise) : set.exercise)
+      }
+    ));
+
+    Workout({ variables: { name, sets: parsedSets } });
+    //this.setState(this.initialState);
+  }
+
+  handleUpdate(cache, { data: { create_workout: workout } }) {
+    const { workouts } = cache.readQuery({
+      query: WorkoutsQuery,
+      variables: { filter: '' }
+    });
+    cache.writeQuery({
+      query: WorkoutsQuery,
+      data: { workouts: workouts.concat(workout) }
+    });
+
+  }
+
+  handleInputChange(e, prop) {
+    this.setState({[prop]: e.target.value});
+  }
+
+  handleArrayInputChange(e, i, prop) {
+    const sets = this.state.sets.map((set, idx) => {
+      if (i === idx) {
+        return { ...set, [prop]: e.target.value };
+      } else {
+        return set;
+      }
+    });
+
+    this.setState({ sets });
+  }
+
+  handleAddSet() {
+    const newSet = { exercise: {}, reps: 1 };
+    this.setState({ sets: [...this.state.sets, newSet] });
+  }
+
+  renderExericseOption(exercise) {
+    return(
+      <option key={`exercise-${exercise.id}`}value={JSON.stringify(exercise)}>
+        {exercise.name}
+      </option>
+    );
+  }
+
+  renderExericseLine(set, i) {
+    return (
+      <div key={`set-${i}`}>
+        <label>Exercise:</label>
+        <select value={set.exercise} onChange={(e) => this.handleArrayInputChange(e, i, 'exercise')}>
+          <option></option>
+          {Exercises.map(this.renderExericseOption)}
+        </select>
+        <label>Reps:</label>
+        <input type='number' min='1' value={set.reps} onChange={(e) => this.handleArrayInputChange(e, i, 'reps')} />
+      </div>
+    );
   }
 
   render() {
     return (
-      <Mutation mutation={AddWorkoutQuery}>
-        {(addWorkout, { data }) => (
-          <form onSubmit={(e) => this.handleSubmit(e, addWorkout)}>
+      <Mutation mutation={AddWorkoutQuery} update={this.handleUpdate}>
+        {(Workout, { data }) => (
+          <form onSubmit={(e) => this.handleSubmit(e, Workout)}>
             <div>
-              <input ref={ node => {this.input = node;} } />
+              <label>Workout:</label>
+              <input value={this.state.name} onChange={(e) => this.handleInputChange(e, 'name')} />
             </div>
+            {this.state.sets.map(this.renderExericseLine)}
             <div>
+              <button type="button" onClick={() => this.handleAddSet()}>+ Add next set</button>
               <button type="submit">Add workout</button>
             </div>
           </form>
