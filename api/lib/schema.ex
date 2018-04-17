@@ -17,8 +17,8 @@ defmodule Api.Schema do
   mutation do
     @desc "Create workout"
     field :create_workout, :workout do
-      arg :id, :id
-      arg :name, :string
+      arg :name, non_null(:string)
+      arg :sets, list_of(:set_input)
 
       resolve &Resolvers.Workouts.create/3
     end

@@ -1,5 +1,5 @@
 // import gql query
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 
 const WorkoutSchema = `{
   id
@@ -21,12 +21,9 @@ const WorkoutsQuery = gql`
 `;
 
 const AddWorkoutQuery = gql`
-  mutation Workout($name: String!){
-    create_workout(name: $name)${WorkoutSchema}
+  mutation Workout($name: String! $sets: [SetInput]){
+    create_workout(name: $name, sets: $sets)${WorkoutSchema}
   }
 `;
 
-export {
-  WorkoutsQuery,
-  AddWorkoutQuery,
-}
+export { WorkoutsQuery, AddWorkoutQuery };

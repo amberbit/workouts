@@ -18,7 +18,7 @@ defmodule Core.Workouts do
   end
 
   def start_link() do
-    GenServer.start_link(__MODULE__, seed, name: __MODULE__)
+    GenServer.start_link(__MODULE__, seed(), name: __MODULE__)
   end
 
   def handle_call(:all, _from, workouts) do
@@ -29,7 +29,7 @@ defmodule Core.Workouts do
     args =
       args
       |> Map.put(:id, gen_id(workouts))
-      |> Map.put(:sets, [])
+      |> Map.put(:sets, write_sets(Map.get(args, :sets), workouts))
 
     workout = struct(Core.Workout, args)
     {:reply, workout, [workout | workouts]}
@@ -40,7 +40,7 @@ defmodule Core.Workouts do
   end
 
   def by_name(name_fragment) do
-    all
+    all()
     |> Enum.filter(&String.contains?(parsed(&1.name), parsed(name_fragment)))
   end
 
@@ -52,8 +52,20 @@ defmodule Core.Workouts do
     String.downcase(string)
   end
 
-  defp gen_id(workouts) do
-    Enum.max_by(workouts, fn(workout) -> workout.id end).id + 1
+  defp gen_id(collection) do
+    Enum.max_by(collection, fn collection -> collection.id end).id + 1
+  end
+
+  defp write_sets(sets, workouts) do
+    sets |> Enum.with_index() |> Enum.map(fn {set, idx} -> write_set(set, idx, workouts) end)
+  end
+
+  defp write_set(set, idx, workouts) do
+    set |> Map.put(:id, gen_set_id(workouts, idx))
+  end
+
+  defp gen_set_id(workouts, idx) do
+    workouts |> Enum.flat_map(fn workout -> workout.sets end) |> gen_id |> Kernel.+(idx)
   end
 
   defp seed do
@@ -73,7 +85,7 @@ defmodule Core.Workouts do
           %Core.Set{id: 9, exercise: %Core.Exercise{id: 3, name: "Barbell calf raise"}, reps: 10}
         ]
       },
-    %Core.Workout{
+      %Core.Workout{
         id: 2,
         name: "Day 2: Chest",
         sets: [
@@ -82,7 +94,7 @@ defmodule Core.Workouts do
           %Core.Set{id: 12, exercise: %Core.Exercise{id: 4, name: "Push ups"}, reps: 4},
           %Core.Set{id: 13, exercise: %Core.Exercise{id: 5, name: "Bench press"}, reps: 5},
           %Core.Set{id: 14, exercise: %Core.Exercise{id: 5, name: "Bench press"}, reps: 5},
-          %Core.Set{id: 15, exercise: %Core.Exercise{id: 5, name: "Bench press"}, reps: 5},
+          %Core.Set{id: 15, exercise: %Core.Exercise{id: 5, name: "Bench press"}, reps: 5}
         ]
       }
     ]
