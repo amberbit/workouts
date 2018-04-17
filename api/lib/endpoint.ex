@@ -45,6 +45,7 @@ defmodule Api.Endpoint do
     signing_salt: "LiMjippI"
   )
 
+  plug CORSPlug
   plug(Api.Router)
 
   @doc """
