@@ -17,4 +17,9 @@ defmodule Api.Schema.Types do
     field(:name, :string)
     field(:sets, list_of(:set))
   end
+
+  input_object :set_input do
+    field(:exercise, non_null(:exercise))
+    field(:reps, non_null(:integer))
+  end
 end
