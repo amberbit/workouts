@@ -1,7 +1,7 @@
 defmodule Api.Application do
   use Application
 
-  alias Core.Workouts
+  # alias Core.Workouts
 
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
