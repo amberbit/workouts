@@ -1,5 +1,22 @@
 # ui-reason
 
+## Prerequisites
+
+Install the bucklescript compiler
+
+```
+npm install -g bs-platform
+```
+
+(recommended:) install the reason-cli
+
+```
+macOS	npm install -g reason-cli@3.1.0-darwin
+Linux	npm install -g reason-cli@3.1.0-linux
+```
+
+(recommended:) install the [vscode extension](https://github.com/reasonml-editor/vscode-reasonml)
+
 ## Run Project
 
 ```sh
