@@ -26,7 +26,7 @@ class WorkoutFormView extends Component {
     e.preventDefault();
     const { name, sets } = this.state;
     const parsedSets = sets.map(set => ({
-      reps: parseInt(set.reps),
+      reps: parseInt(set.reps, 10),
       exercise:
         typeof set.exercise === "string"
           ? JSON.parse(set.exercise)
